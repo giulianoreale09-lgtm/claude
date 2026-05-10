@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J.A.R.V.I.S — Neural Interface</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   JARVIS — Ultra Modern Neural Interface
+   Dark Sci-Fi • Liquid Animations • 3D Brain
+═══════════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --void:#020408;
+  --deep:#060c14;
+  --panel:rgba(8,18,32,0.9);
+  --panel2:rgba(5,12,24,0.95);
+  --border:rgba(0,180,255,0.12);
+  --border2:rgba(0,180,255,0.06);
+  --cyan:#00d4ff;
+  --cyan2:#0095cc;
+  --cyan-dim:rgba(0,212,255,0.15);
+  --cyan-glow:rgba(0,212,255,0.08);
+  --green:#00ff88;
+  --red:#ff2d55;
+  --orange:#ff6b00;
+  --text:#e8f4ff;
+  --text2:rgba(200,230,255,0.55);
+  --text3:rgba(150,200,240,0.3);
+  --font:'Space Grotesk',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+html,body{
+  height:100%; overflow:hidden;
+  font-family:var(--font);
+  background:var(--void);
+  color:var(--text);
+  cursor:default;
+}
+
+/* ── CUSTOM CURSOR ── */
+*{cursor:none!important;}
+#cursor{
+  position:fixed;width:8px;height:8px;
+  background:var(--cyan);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .15s,height .15s,background .15s;
+  box-shadow:0 0 12px var(--cyan),0 0 24px rgba(0,212,255,.4);
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:32px;height:32px;
+  border:1px solid rgba(0,212,255,.5);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform .08s ease-out,width .2s,height .2s,opacity .2s;
+}
+
+/* ── BOOT SCREEN ── */
+#boot{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--void);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;
+}
+
+.boot-logo{
+  font-family:var(--mono);font-size:clamp(2rem,5vw,4rem);
+  font-weight:300;letter-spacing:24px;color:var(--cyan);
+  text-shadow:0 0 40px var(--cyan),0 0 80px rgba(0,212,255,.4);
+  animation:bootLogo 1s ease forwards;
+  opacity:0;
+}
+@keyframes bootLogo{
+  0%{opacity:0;letter-spacing:40px;filter:blur(20px);}
+  100%{opacity:1;letter-spacing:24px;filter:blur(0);}
+}
+
+.boot-line{
+  width:320px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  margin:24px 0;opacity:0;animation:bootLine .5s .8s ease forwards;
+}
+@keyframes bootLine{to{opacity:1;}}
+
+.boot-sub{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:6px;
+  color:var(--text2);opacity:0;animation:bootFade .5s 1s ease forwards;
+}
+@keyframes bootFade{to{opacity:1;}}
+
+.boot-progress{
+  width:320px;height:1px;background:rgba(0,212,255,.1);
+  margin-top:40px;overflow:hidden;opacity:0;
+  animation:bootFade .3s 1.3s ease forwards;
+}
+.boot-bar{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+  box-shadow:0 0 8px var(--cyan);
+  animation:bootBar 1.8s 1.4s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes bootBar{to{width:100%;}}
+
+.boot-status{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:2px;
+  color:var(--text3);margin-top:12px;opacity:0;
+  animation:bootFade .3s 1.5s ease forwards;
+}
+
+/* ── SETUP PANEL ── */
+#setup{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 50%,rgba(0,40,80,.3) 0%,var(--void) 70%);
+  display:none;
+}
+
+.setup-card{
+  position:relative;width:460px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:48px;
+  animation:cardIn .6s cubic-bezier(.34,1.56,.64,1);
+  overflow:hidden;
+}
+.setup-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+.setup-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,212,255,.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(30px) scale(.96);}
+  to{opacity:1;transform:none;}
+}
+
+.card-corner{
+  position:absolute;width:16px;height:16px;
+  border-color:var(--cyan);border-style:solid;
+  opacity:.6;
+}
+.card-corner.tl{top:12px;left:12px;border-width:1px 0 0 1px;}
+.card-corner.tr{top:12px;right:12px;border-width:1px 1px 0 0;}
+.card-corner.bl{bottom:12px;left:12px;border-width:0 0 1px 1px;}
+.card-corner.br{bottom:12px;right:12px;border-width:0 1px 1px 0;}
+
+.setup-label{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:4px;
+  color:var(--cyan);opacity:.7;margin-bottom:24px;
+}
+.setup-card h1{
+  font-size:2.2rem;font-weight:700;letter-spacing:-1px;
+  margin-bottom:6px;color:var(--text);
+}
+.setup-card p{
+  font-size:.84rem;color:var(--text2);line-height:1.7;margin-bottom:30px;
+}
+.setup-card a{color:var(--cyan);text-decoration:none;}
+
+.field-label{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:3px;
+  color:var(--text3);margin-bottom:8px;
+}
+.neo-input{
+  width:100%;padding:14px 16px;
+  background:rgba(0,20,40,.8);
+  border:1px solid rgba(0,212,255,.2);
+  border-radius:2px;
+  font-family:var(--mono);font-size:.85rem;color:var(--cyan);
+  outline:none;margin-bottom:16px;
+  transition:all .3s;letter-spacing:1px;
+}
+.neo-input:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 1px rgba(0,212,255,.3),inset 0 0 20px rgba(0,212,255,.03);
+}
+.neo-input::placeholder{color:rgba(0,212,255,.2);letter-spacing:1px;}
+
+.neo-btn{
+  width:100%;padding:15px;
+  background:transparent;
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  font-family:var(--mono);font-size:.8rem;letter-spacing:4px;
+  cursor:none;transition:all .3s;position:relative;overflow:hidden;
+}
+.neo-btn::before{
+  content:'';position:absolute;inset:0;
+  background:var(--cyan);transform:translateX(-101%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.neo-btn:hover::before{transform:translateX(0);}
+.neo-btn:hover{color:var(--void);}
+.neo-btn span{position:relative;z-index:1;}
+
+.setup-note{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:1px;
+  color:var(--text3);margin-top:14px;text-align:center;
+}
+
+/* ── MAIN APP ── */
+#app{
+  display:none;height:100vh;
+  grid-template-rows:48px 1fr;
+  grid-template-columns:1fr 380px;
+}
+#app.on{display:grid;}
+
+/* ── HEADER ── */
+header{
+  grid-column:1/-1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  background:rgba(2,6,12,.95);
+  border-bottom:1px solid var(--border2);
+  position:relative;z-index:50;
+}
+header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,.3),transparent);
+}
+
+.h-brand{
+  display:flex;align-items:center;gap:14px;
+}
+.h-logo{
+  font-family:var(--mono);font-size:.9rem;font-weight:500;
+  letter-spacing:8px;color:var(--cyan);
+  text-shadow:0 0 20px rgba(0,212,255,.5);
+}
+.h-sep{width:1px;height:20px;background:var(--border);}
+.h-sub{font-family:var(--mono);font-size:.58rem;letter-spacing:3px;color:var(--text3);}
+
+.h-center{
+  position:absolute;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:20px;
+}
+.h-stat{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.62rem;color:var(--text3);}
+.h-stat-dot{width:5px;height:5px;border-radius:50%;}
+.h-stat-dot.green{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
+.h-stat-dot.cyan{background:var(--cyan);box-shadow:0 0 6px var(--cyan);animation:pulse 2.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.h-right{display:flex;align-items:center;gap:16px;}
+#clock{font-family:var(--mono);font-size:.72rem;color:var(--text2);letter-spacing:2px;}
+
+/* ── BRAIN PANEL ── */
+.brain-panel{
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 40% 50%,rgba(0,20,50,.8) 0%,var(--void) 70%);
+}
+
+/* Animated grid bg */
+.brain-panel::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridDrift 20s linear infinite;
+  transform-origin:center;
+}
+@keyframes gridDrift{
+  0%{transform:perspective(400px) rotateX(20deg) translateY(0);}
+  100%{transform:perspective(400px) rotateX(20deg) translateY(60px);}
+}
+
+#brainCanvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:2;
+}
+
+/* HUD overlays */
+.hud-corner{
+  position:absolute;z-index:10;
+  font-family:var(--mono);font-size:.6rem;letter-spacing:2px;color:var(--text3);
+}
+.hud-tl{top:20px;left:20px;}
+.hud-tr{top:20px;right:20px;text-align:right;}
+.hud-bl{bottom:20px;left:20px;}
+.hud-br{bottom:20px;right:20px;text-align:right;}
+
+.hud-val{
+  font-size:.75rem;color:var(--cyan);
+  text-shadow:0 0 10px rgba(0,212,255,.5);
+  margin-top:3px;
+}
+
+/* Scan line effect */
+.scanline{
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.03) 2px,
+    rgba(0,0,0,.03) 4px
+  );
+}
+
+/* Brain state */
+.brain-mode-ring{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:4;pointer-events:none;
+  width:320px;height:320px;border-radius:50%;
+  border:1px solid rgba(0,212,255,.08);
+  transition:all 1.2s cubic-bezier(.4,0,.2,1);
+}
+.brain-mode-ring::before{
+  content:'';position:absolute;inset:-20px;border-radius:50%;
+  border:1px solid rgba(0,212,255,.05);
+}
+.brain-mode-ring::after{
+  content:'';position:absolute;inset:-40px;border-radius:50%;
+  border:1px solid rgba(0,212,255,.03);
+}
+.brain-mode-ring.thinking{
+  border-color:rgba(255,45,85,.4);
+  box-shadow:0 0 60px rgba(255,45,85,.15),inset 0 0 60px rgba(255,45,85,.05);
+  animation:thinkRing 2s ease-in-out infinite;
+}
+.brain-mode-ring.answering{
+  border-color:rgba(0,255,136,.4);
+  box-shadow:0 0 60px rgba(0,255,136,.15),inset 0 0 60px rgba(0,255,136,.05);
+}
+@keyframes thinkRing{
+  0%,100%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.04);}
+}
+
+.state-tag{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  z-index:10;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:4px;
+  padding:6px 18px;
+  background:rgba(0,8,20,.8);
+  border:1px solid var(--border);
+  color:var(--cyan);
+  white-space:nowrap;
+  backdrop-filter:blur(10px);
+  transition:all .6s;
+}
+.state-tag::before,.state-tag::after{
+  content:'';position:absolute;width:6px;height:6px;
+  border-color:var(--cyan);border-style:solid;opacity:.5;
+}
+.state-tag::before{top:-1px;left:-1px;border-width:1px 0 0 1px;}
+.state-tag::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
+
+/* ── RIGHT COLUMN ── */
+.right-col{
+  display:flex;flex-direction:column;
+  background:var(--panel2);
+  border-left:1px solid var(--border2);
+  position:relative;
+}
+.right-col::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,transparent,rgba(0,212,255,.2),transparent);
+}
+
+/* ── STATS ROW ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-bottom:1px solid var(--border2);
+}
+.stat-cell{
+  padding:12px 14px;border-right:1px solid var(--border2);
+  position:relative;overflow:hidden;
+}
+.stat-cell:last-child{border-right:none;}
+.stat-cell::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  transform:scaleX(0);transition:transform .4s;
+  transform-origin:left;
+}
+.stat-cell:hover::after{transform:scaleX(1);}
+
+.sc-label{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:2px;
+  color:var(--text3);margin-bottom:5px;
+}
+.sc-val{
+  font-family:var(--mono);font-size:1rem;font-weight:500;
+  color:var(--cyan);
+  text-shadow:0 0 12px rgba(0,212,255,.4);
+}
+.sc-bar{
+  height:2px;background:rgba(0,212,255,.08);margin-top:5px;overflow:hidden;
+}
+.sc-fill{
+  height:100%;width:5%;
+  background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+  box-shadow:0 0 6px var(--cyan);
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── CHAT ── */
+#msgs{
+  flex:1;overflow-y:auto;
+  padding:20px 18px;
+  display:flex;flex-direction:column;gap:16px;
+  scroll-behavior:smooth;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,212,255,.15) transparent;
+}
+#msgs::-webkit-scrollbar{width:2px;}
+#msgs::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2);}
+
+.welcome{
+  text-align:center;padding:40px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.welcome-ring{
+  width:80px;height:80px;border-radius:50%;
+  border:1px solid rgba(0,212,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  animation:welcomeSpin 8s linear infinite;
+}
+@keyframes welcomeSpin{to{transform:rotate(360deg);}}
+.welcome-ring::before{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid rgba(0,212,255,.1);
+  animation:welcomeSpin 12s linear infinite reverse;
+}
+.welcome-ring-inner{
+  font-size:2rem;
+  animation:welcomeSpin 8s linear infinite reverse;
+}
+.welcome h2{
+  font-size:1.1rem;font-weight:600;color:var(--text);
+  letter-spacing:-.3px;
+}
+.welcome p{font-size:.8rem;color:var(--text2);line-height:1.7;max-width:260px;}
+
+/* Messages */
+.msg-wrap{
+  display:flex;flex-direction:column;gap:4px;
+  animation:msgIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes msgIn{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:none;}
+}
+.msg-wrap.user{align-items:flex-end;}
+.msg-wrap.bot{align-items:flex-start;}
+
+.msg-meta{
+  font-family:var(--mono);font-size:.56rem;letter-spacing:3px;
+  color:var(--text3);padding:0 4px;
+}
+
+.bubble{
+  max-width:90%;padding:12px 16px;font-size:.86rem;line-height:1.68;
+  word-break:break-word;position:relative;
+}
+.msg-wrap.user .bubble{
+  background:rgba(0,120,200,.2);
+  border:1px solid rgba(0,180,255,.25);
+  border-radius:12px 12px 2px 12px;
+  color:var(--text);
+  box-shadow:0 4px 20px rgba(0,100,200,.15),inset 0 1px 0 rgba(0,212,255,.1);
+}
+.msg-wrap.user .bubble::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg,rgba(0,212,255,.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+.msg-wrap.bot .bubble{
+  background:rgba(0,20,40,.6);
+  border:1px solid var(--border);
+  border-radius:12px 12px 12px 2px;
+  color:var(--text);
+  backdrop-filter:blur(10px);
+}
+.msg-wrap.bot .bubble::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+  opacity:.4;border-radius:inherit;
+}
+
+/* Typing */
+.typing-wrap{display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
+.typing-bub{
+  padding:14px 18px;
+  background:rgba(0,20,40,.6);border:1px solid var(--border);
+  border-radius:12px 12px 12px 2px;
+  display:flex;gap:6px;align-items:center;
+}
+.td{
+  width:5px;height:5px;border-radius:50%;background:var(--cyan);
+  animation:td 1.4s ease-in-out infinite;
+  box-shadow:0 0 6px var(--cyan);
+}
+.td:nth-child(2){animation-delay:.2s;}
+.td:nth-child(3){animation-delay:.4s;}
+@keyframes td{
+  0%,60%,100%{transform:translateY(0);opacity:.3;}
+  30%{transform:translateY(-7px);opacity:1;}
+}
+
+/* ── INPUT ── */
+.input-zone{
+  padding:14px 16px 18px;
+  background:rgba(2,6,14,.95);
+  border-top:1px solid var(--border2);
+  position:relative;
+}
+.input-zone::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,.2),transparent);
+}
+.input-row{display:flex;gap:8px;align-items:flex-end;}
+
+#txtIn{
+  flex:1;padding:12px 16px;
+  background:rgba(0,15,35,.8);
+  border:1px solid rgba(0,212,255,.15);
+  color:var(--text);
+  font-family:var(--font);font-size:.86rem;line-height:1.5;
+  outline:none;resize:none;max-height:100px;
+  transition:all .3s;border-radius:2px;
+}
+#txtIn:focus{
+  border-color:rgba(0,212,255,.4);
+  box-shadow:0 0 0 1px rgba(0,212,255,.1),inset 0 0 20px rgba(0,212,255,.02);
+}
+#txtIn::placeholder{color:rgba(0,212,255,.2);font-family:var(--mono);font-size:.75rem;letter-spacing:1px;}
+
+.action-btn{
+  width:40px;height:40px;border:1px solid rgba(0,212,255,.25);
+  background:rgba(0,30,60,.5);
+  color:var(--cyan);font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;flex-shrink:0;cursor:none;
+  border-radius:2px;position:relative;overflow:hidden;
+}
+.action-btn::before{
+  content:'';position:absolute;inset:0;
+  background:var(--cyan);transform:scale(0);border-radius:50%;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);opacity:.15;
+}
+.action-btn:hover::before{transform:scale(2);}
+.action-btn:hover{border-color:var(--cyan);box-shadow:0 0 16px rgba(0,212,255,.2);}
+.action-btn.mic-on{border-color:var(--red);color:var(--red);animation:micPulse 1s infinite;}
+@keyframes micPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,45,85,.4);}
+  50%{box-shadow:0 0 0 8px rgba(255,45,85,0);}
+}
+
+/* ── MEMORY ── */
+.mem-panel{
+  border-top:1px solid var(--border2);padding:10px 16px 12px;
+  max-height:88px;overflow-y:auto;scrollbar-width:none;
+}
+.mem-hdr{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:3px;
+  color:var(--text3);margin-bottom:7px;
+}
+.mem-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--mono);font-size:.62rem;color:var(--text2);
+  padding:3px 9px;border:1px solid var(--border2);
+  margin:2px;letter-spacing:.5px;
+  animation:chipIn .3s ease;
+}
+@keyframes chipIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:none;}}
+.mem-chip::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--cyan);opacity:.6;}
+
+/* ── PARTICLES (bg stars) ── */
+#particles{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  overflow:hidden;
+}
+.star{
+  position:absolute;border-radius:50%;
+  background:var(--cyan);
+  animation:starFloat linear infinite;
+  opacity:0;
+}
+@keyframes starFloat{
+  0%{transform:translateY(100vh) translateX(0);opacity:0;}
+  10%{opacity:.6;}
+  90%{opacity:.2;}
+  100%{transform:translateY(-20px) translateX(20px);opacity:0;}
+}
+
+/* ── GLITCH EFFECT ── */
+@keyframes glitch{
+  0%,100%{transform:none;filter:none;}
+  20%{transform:translate(-2px,1px);filter:hue-rotate(30deg);}
+  40%{transform:translate(2px,-1px);filter:hue-rotate(-20deg);}
+  60%{transform:translate(-1px,2px);}
+  80%{transform:translate(1px,-2px);filter:hue-rotate(10deg);}
+}
+
+/* Noise overlay */
+.noise{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+}
+</style>
+</head>
+<body>
+
+<!-- NOISE & PARTICLES -->
+<div class="noise"></div>
+<div id="particles"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- BOOT -->
+<div id="boot">
+  <div class="boot-logo">JARVIS</div>
+  <div class="boot-line"></div>
+  <div class="boot-sub">NEURAL INTERFACE v4.0</div>
+  <div class="boot-progress"><div class="boot-bar"></div></div>
+  <div class="boot-status" id="bootStatus">INITIALIZING NEURAL PATHWAYS...</div>
+</div>
+
+<!-- SETUP -->
+<div id="setup">
+  <div class="setup-card">
+    <div class="card-corner tl"></div>
+    <div class="card-corner tr"></div>
+    <div class="card-corner bl"></div>
+    <div class="card-corner br"></div>
+    <div class="setup-label">// SYSTEM ACCESS REQUIRED</div>
+    <h1>J.A.R.V.I.S</h1>
+    <p>Just A Rather Very Intelligent System.<br>
+    Kostenlosen API-Key holen auf<br>
+    <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a> — dauert 2 Minuten.</p>
+    <div class="field-label">// GEMINI API KEY</div>
+    <input class="neo-input" type="password" id="keyIn" placeholder="AIzaSy..." autocomplete="off">
+    <button class="neo-btn" onclick="launch()"><span>SYSTEM AKTIVIEREN →</span></button>
+    <p class="setup-note">// KEY WIRD NUR LOKAL GESPEICHERT</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="h-brand">
+      <div class="h-logo">J.A.R.V.I.S</div>
+      <div class="h-sep"></div>
+      <div class="h-sub">NEURAL INTERFACE</div>
+    </div>
+    <div class="h-center">
+      <div class="h-stat"><div class="h-stat-dot green"></div>ONLINE</div>
+      <div class="h-stat"><div class="h-stat-dot cyan"></div>SELF-LEARNING</div>
+      <div class="h-stat" id="hNeurons" style="color:var(--cyan);">0 NEURONS</div>
+    </div>
+    <div class="h-right">
+      <div id="clock"></div>
+    </div>
+  </header>
+
+  <!-- BRAIN -->
+  <div class="brain-panel">
+    <div class="hud-corner hud-tl">
+      <div>NEURAL CORE</div>
+      <div class="hud-val" id="hudNeurons">000</div>
+    </div>
+    <div class="hud-corner hud-tr">
+      <div>SYNAPSES</div>
+      <div class="hud-val" id="hudSyn">000</div>
+    </div>
+    <div class="hud-corner hud-bl">
+      <div>LOAD</div>
+      <div class="hud-val" id="hudLoad">05%</div>
+    </div>
+    <div class="hud-corner hud-br">
+      <div>CONFIDENCE</div>
+      <div class="hud-val" id="hudConf">---%</div>
+    </div>
+    <div class="brain-mode-ring" id="modeRing"></div>
+    <canvas id="brainCanvas"></canvas>
+    <div class="scanline"></div>
+    <div class="state-tag" id="stateTag">◈ STANDBY</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="sc-label">// AUSLASTUNG</div>
+        <div class="sc-val" id="scLoad">05%</div>
+        <div class="sc-bar"><div class="sc-fill" id="scLoadBar"></div></div>
+      </div>
+      <div class="stat-cell">
+        <div class="sc-label">// NEURONEN</div>
+        <div class="sc-val" id="scNeurons">0</div>
+        <div class="sc-bar"><div class="sc-fill" id="scNBar" style="background:linear-gradient(90deg,#00ff88,#00d4ff);box-shadow:0 0 6px #00ff88;"></div></div>
+      </div>
+      <div class="stat-cell">
+        <div class="sc-label">// LERNRATE</div>
+        <div class="sc-val" id="scLearn">0%</div>
+        <div class="sc-bar"><div class="sc-fill" id="scLBar" style="background:linear-gradient(90deg,#ff6b00,#ff2d55);box-shadow:0 0 6px #ff6b00;"></div></div>
+      </div>
+    </div>
+
+    <div id="msgs">
+      <div class="welcome">
+        <div class="welcome-ring">
+          <div class="welcome-ring-inner">◈</div>
+        </div>
+        <h2>Guten Tag, Sir.</h2>
+        <p>Neurales Interface online. Das Gehirn expandiert beim Denken — zieht sich beim Antworten zusammen. Kontinuierliches Selbstlernen aktiv.</p>
+      </div>
+    </div>
+
+    <div class="input-zone">
+      <div class="input-row">
+        <button class="action-btn" id="micBtn" onclick="toggleMic()">◉</button>
+        <textarea id="txtIn" placeholder="// ANFRAGE EINGEBEN..." rows="1"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="action-btn" id="sendBtn" onclick="send()">▶</button>
+      </div>
+    </div>
+
+    <div class="mem-panel">
+      <div class="mem-hdr">// GEDÄCHTNIS-LOG</div>
+      <div id="memLog"><span style="font-family:var(--mono);font-size:.6rem;color:var(--text3)">KEINE DATEN</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// CORE STATE
+// ══════════════════════════════════════
+let KEY='', history=[], busy=false;
+let topics=[], msgCount=0, learnCycles=0;
+let recog=null, listening=false;
+
+// Brain
+let neurons=[], conns=[];
+let rotX=0.25, rotY=0, rotSpeedX=0.0004, rotSpeedY=0.0025;
+let brainScale=1, brainTargetScale=1;
+let brainMode='idle';
+let W=0, H=0;
+let confVal=0;
+let animT=0;
+
+// ══════════════════════════════════════
+// CURSOR
+// ══════════════════════════════════════
+const cur=document.getElementById('cursor');
+const curRing=document.getElementById('cursor-ring');
+let mx=window.innerWidth/2, my=window.innerHeight/2;
+let rx=mx, ry=my;
+
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+
+function animCursor(){
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  curRing.style.left=rx+'px'; curRing.style.top=ry+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// ══════════════════════════════════════
+// PARTICLES
+// ══════════════════════════════════════
+function spawnStars(){
+  const box=document.getElementById('particles');
+  for(let i=0;i<40;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=Math.random()*1.5+0.5;
+    s.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      animation-duration:${8+Math.random()*20}s;
+      animation-delay:${Math.random()*10}s;
+      opacity:0;
+      box-shadow:0 0 ${size*2}px rgba(0,212,255,.6);
+    `;
+    box.appendChild(s);
+  }
+}
+spawnStars();
+
+// ══════════════════════════════════════
+// BOOT SEQUENCE
+// ══════════════════════════════════════
+const bootLines=[
+  'LOADING NEURAL ARCHITECTURE...',
+  'CALIBRATING SYNAPTIC WEIGHTS...',
+  'ESTABLISHING GEMINI LINK...',
+  'INITIALIZING SELF-LEARNING MODULE...',
+  'SYSTEM READY.'
+];
+let bi=0;
+const bootInt=setInterval(()=>{
+  if(bi<bootLines.length){
+    document.getElementById('bootStatus').textContent=bootLines[bi++];
+  }
+},360);
+
+setTimeout(()=>{
+  clearInterval(bootInt);
+  document.getElementById('boot').style.transition='opacity .6s';
+  document.getElementById('boot').style.opacity='0';
+  setTimeout(()=>{
+    document.getElementById('boot').style.display='none';
+    const saved=localStorage.getItem('jkey');
+    if(saved){ document.getElementById('keyIn').value=saved; }
+    document.getElementById('setup').style.display='flex';
+  },600);
+},3200);
+
+// ══════════════════════════════════════
+// LAUNCH
+// ══════════════════════════════════════
+function launch(){
+  const k=document.getElementById('keyIn').value.trim();
+  if(!k){alert('API-Key eingeben.'); return;}
+  KEY=k; localStorage.setItem('jkey',k);
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').classList.add('on');
+  initBrain();
+  tickClock(); setInterval(tickClock,1000);
+  setInterval(autoLearn,3500);
+  setTimeout(()=>speak('Guten Tag Sir. Jarvis Neural Interface ist online.'),600);
+}
+
+function tickClock(){
+  document.getElementById('clock').textContent=
+    new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ══════════════════════════════════════
+// 3D BRAIN ENGINE
+// ══════════════════════════════════════
+function initBrain(){
+  const cv=document.getElementById('brainCanvas');
+  doResize();
+  window.addEventListener('resize',doResize);
+
+  // Drag rotate
+  let drag=false, lx=0, ly=0;
+  cv.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;});
+  window.addEventListener('mouseup',()=>drag=false);
+  window.addEventListener('mousemove',e=>{
+    if(!drag) return;
+    rotY+=(e.clientX-lx)*0.007; rotX+=(e.clientY-ly)*0.004;
+    lx=e.clientX; ly=e.clientY;
+  });
+  cv.addEventListener('touchstart',e=>{drag=true;lx=e.touches[0].clientX;ly=e.touches[0].clientY;},{passive:true});
+  cv.addEventListener('touchend',()=>drag=false);
+  cv.addEventListener('touchmove',e=>{
+    if(!drag) return;
+    rotY+=(e.touches[0].clientX-lx)*0.009;rotX+=(e.touches[0].clientY-ly)*0.005;
+    lx=e.touches[0].clientX;ly=e.touches[0].clientY;
+  },{passive:true});
+
+  buildBrain(70);
+  requestAnimationFrame(drawLoop);
+}
+
+function doResize(){
+  const cv=document.getElementById('brainCanvas');
+  const p=cv.parentElement;
+  W=p.clientWidth; H=p.clientHeight;
+  cv.width=W; cv.height=H;
+}
+
+// ── CONCEPTS ──
+const CONCEPTS=['Sprache','Logik','Gedächtnis','Kontext','Kreativität','Analyse',
+  'Fakten','Planung','Synthese','Lernen','Emotion','Muster','Intuition','Strategie'];
+
+function buildBrain(n){
+  neurons=[];
+  // Fibonacci sphere for perfect distribution
+  const phi=Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<n;i++){
+    const y=1-(i/(n-1))*2;
+    const r=Math.sqrt(Math.max(0,1-y*y));
+    const t=phi*i;
+    const rad=130+Math.random()*40;
+    neurons.push({
+      bx:Math.cos(t)*r*rad,
+      by:y*rad,
+      bz:Math.sin(t)*r*rad,
+      act:0.05+Math.random()*0.15,
+      base:0.05+Math.random()*0.12,
+      fire:false,fp:0,born:Date.now(),
+      phase:Math.random()*Math.PI*2,
+      r:2.5+Math.random()*3,
+      concept:CONCEPTS[Math.floor(Math.random()*CONCEPTS.length)],
+      weight:0.1+Math.random()*0.4
+    });
+  }
+  rebuildConns();
+  updateStats();
+}
+
+function rebuildConns(){
+  conns=[];
+  for(let i=0;i<neurons.length;i++){
+    for(let j=i+1;j<neurons.length;j++){
+      const dx=neurons[i].bx-neurons[j].bx;
+      const dy=neurons[i].by-neurons[j].by;
+      const dz=neurons[i].bz-neurons[j].bz;
+      const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+      if(d<95&&Math.random()>0.5){
+        conns.push({a:i,b:j,w:0.1+Math.random()*0.6,sig:0,on:false,d});
+      }
+    }
+  }
+}
+
+// ── SELF LEARNING ──
+function autoLearn(){
+  if(brainMode==='thinking') return;
+  // Strengthen random connections (hebbian learning)
+  conns.forEach(c=>{if(Math.random()<0.06) c.w=Math.min(1,c.w+0.04);});
+  // Prune weak (synaptic pruning)
+  if(conns.length>600&&Math.random()<0.2){
+    conns.sort((a,b)=>a.w-b.w);
+    conns.splice(0,3);
+  }
+  // Grow new neuron
+  if(neurons.length<200&&Math.random()<0.4){
+    growNeuron();
+    learnCycles++;
+  }
+  // Random idle spark
+  const n=neurons[Math.floor(Math.random()*neurons.length)];
+  if(n){n.fire=true;n.fp=0;}
+  updateStats();
+}
+
+function growNeuron(){
+  const parent=neurons[Math.floor(Math.random()*neurons.length)];
+  const a1=Math.random()*Math.PI*2, a2=Math.random()*Math.PI*2;
+  const off=25+Math.random()*50;
+  const nn={
+    bx:parent.bx+Math.cos(a1)*Math.cos(a2)*off,
+    by:parent.by+Math.sin(a2)*off,
+    bz:parent.bz+Math.sin(a1)*Math.cos(a2)*off,
+    act:1,base:0.06+Math.random()*0.1,
+    fire:true,fp:0,born:Date.now(),
+    phase:Math.random()*Math.PI*2,
+    r:2+Math.random()*2.5,
+    concept:CONCEPTS[Math.floor(Math.random()*CONCEPTS.length)],
+    weight:Math.random()
+  };
+  neurons.push(nn);
+  const ni=neurons.length-1;
+  neurons.forEach((n,i)=>{
+    if(i===ni) return;
+    const dx=nn.bx-n.bx,dy=nn.by-n.by,dz=nn.bz-n.bz;
+    const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+    if(d<80&&Math.random()>0.55) conns.push({a:ni,b:i,w:0.2+Math.random()*0.5,sig:0,on:false,d});
+  });
+}
+
+function updateStats(){
+  const nn=neurons.length, ns=conns.length;
+  const lp=Math.min(100,Math.round((nn/200)*100));
+  document.getElementById('hudNeurons').textContent=String(nn).padStart(3,'0');
+  document.getElementById('hudSyn').textContent=String(ns).padStart(3,'0');
+  document.getElementById('scNeurons').textContent=nn;
+  document.getElementById('scLearn').textContent=lp+'%';
+  document.getElementById('scNBar').style.width=lp+'%';
+  document.getElementById('scLBar').style.width=lp+'%';
+  document.getElementById('hNeurons').textContent=nn+' NEURONS';
+}
+
+// ── 3D MATH ──
+function project3D(x,y,z){
+  const cosX=Math.cos(rotX),sinX=Math.sin(rotX);
+  const y1=y*cosX-z*sinX, z1=y*sinX+z*cosX;
+  const cosY=Math.cos(rotY),sinY=Math.sin(rotY);
+  const x2=x*cosY+z1*sinY, z2=-x*sinY+z1*cosY;
+  const cam=350;
+  const sc=brainScale*cam/(cam+z2+200);
+  return{sx:W/2+x2*sc, sy:H/2+y1*sc, sc, z:z2};
+}
+
+// ── DRAW ──
+function drawLoop(ts){
+  animT=ts*0.001;
+  const cv=document.getElementById('brainCanvas');
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  // Smooth scale
+  brainScale+=(brainTargetScale-brainScale)*0.035;
+
+  // Auto rotate
+  rotY+=rotSpeedY;
+  rotX+=rotSpeedX*0.2;
+
+  // Project all
+  const proj=neurons.map((n,i)=>({i,...project3D(n.bx,n.by,n.bz)}));
+
+  // Depth sort (back to front)
+  proj.sort((a,b)=>a.z-b.z);
+
+  // ── CONNECTIONS ──
+  conns.forEach(c=>{
+    const A=proj.find(p=>p.i===c.a), B=proj.find(p=>p.i===c.b);
+    if(!A||!B) return;
+    const avgZ=(A.z+B.z)/2;
+    const depthA=Math.max(0,Math.min(1,(avgZ+220)/380));
+    const baseAlpha=(0.015+c.w*0.055)*depthA;
+
+    if(c.on){
+      // Glowing active connection
+      ctx.beginPath();
+      ctx.moveTo(A.sx,A.sy);
+      ctx.lineTo(B.sx,B.sy);
+      ctx.strokeStyle=`rgba(0,212,255,${0.25*depthA})`;
+      ctx.lineWidth=0.8+c.w;
+      ctx.stroke();
+      // Signal particle
+      const px=A.sx+(B.sx-A.sx)*c.sig;
+      const py=A.sy+(B.sy-A.sy)*c.sig;
+      const pg=ctx.createRadialGradient(px,py,0,px,py,4);
+      pg.addColorStop(0,`rgba(120,240,255,${depthA})`);
+      pg.addColorStop(1,'transparent');
+      ctx.beginPath();
+      ctx.arc(px,py,4,0,Math.PI*2);
+      ctx.fillStyle=pg;
+      ctx.fill();
+      c.sig=Math.min(1,c.sig+0.045);
+      if(c.sig>=1){c.on=false;c.sig=0;}
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(A.sx,A.sy);
+      ctx.lineTo(B.sx,B.sy);
+      ctx.strokeStyle=`rgba(0,150,220,${baseAlpha})`;
+      ctx.lineWidth=0.4;
+      ctx.stroke();
+    }
+  });
+
+  // ── NEURONS ──
+  proj.forEach(pn=>{
+    const n=neurons[pn.i];
+    if(!n) return;
+    const depthA=Math.max(0.1,Math.min(1,(pn.z+220)/380));
+    const r=Math.max(0.5,(n.r+0.5)*pn.sc*2);
+
+    // Update activation
+    n.act=n.base+Math.sin(animT*1.8+n.phase)*0.07;
+    if(n.fire){
+      n.act=0.95;
+      n.fp+=0.04;
+      if(n.fp>=1){n.fire=false;n.fp=0;n.act=n.base;}
+    }
+
+    const hot=n.fire||n.act>0.5;
+
+    // Outer glow
+    if(hot&&r>1){
+      const glowR=r*4;
+      const g=ctx.createRadialGradient(pn.sx,pn.sy,0,pn.sx,pn.sy,glowR);
+      g.addColorStop(0,`rgba(0,200,255,${n.act*0.35*depthA})`);
+      g.addColorStop(0.4,`rgba(0,100,200,${n.act*0.1*depthA})`);
+      g.addColorStop(1,'transparent');
+      ctx.beginPath();
+      ctx.arc(pn.sx,pn.sy,glowR,0,Math.PI*2);
+      ctx.fillStyle=g;
+      ctx.fill();
+    }
+
+    // Core
+    if(r>=0.5){
+      ctx.beginPath();
+      ctx.arc(pn.sx,pn.sy,r,0,Math.PI*2);
+      if(hot){
+        const ng=ctx.createRadialGradient(pn.sx-r*.3,pn.sy-r*.3,0,pn.sx,pn.sy,r);
+        ng.addColorStop(0,`rgba(180,240,255,${depthA})`);
+        ng.addColorStop(0.5,`rgba(0,180,255,${depthA})`);
+        ng.addColorStop(1,`rgba(0,80,180,${depthA})`);
+        ctx.fillStyle=ng;
+      } else {
+        const na=(0.2+n.act*0.55)*depthA;
+        ctx.fillStyle=`rgba(0,130,220,${na})`;
+      }
+      ctx.fill();
+    }
+  });
+
+  // ── ATMOSPHERE ──
+  // Edge vignette
+  const vign=ctx.createRadialGradient(W/2,H/2,H*0.22*brainScale,W/2,H/2,H*0.62*brainScale);
+  vign.addColorStop(0,'transparent');
+  vign.addColorStop(0.7,'transparent');
+  vign.addColorStop(1,'rgba(2,4,8,0.5)');
+  ctx.fillStyle=vign;
+  ctx.fillRect(0,0,W,H);
+
+  requestAnimationFrame(drawLoop);
+}
+
+// ── BRAIN MODES ──
+function setBrainMode(mode){
+  brainMode=mode;
+  const ring=document.getElementById('modeRing');
+  const tag=document.getElementById('stateTag');
+  ring.className='brain-mode-ring';
+
+  if(mode==='thinking'){
+    brainTargetScale=1.42;
+    rotSpeedY=0.009;
+    tag.textContent='◉ VERARBEITUNG — EXPANDIERT';
+    tag.style.color='var(--red)';
+    tag.style.borderColor='rgba(255,45,85,.3)';
+    ring.classList.add('thinking');
+    fireAll(0.75);
+    setLoadUI(88,'var(--red)');
+    document.getElementById('hudLoad').textContent='88%';
+  } else if(mode==='answering'){
+    brainTargetScale=0.72;
+    rotSpeedY=0.0015;
+    tag.textContent='◈ SYNTHESE — FOKUSSIERT';
+    tag.style.color='var(--green)';
+    tag.style.borderColor='rgba(0,255,136,.3)';
+    ring.classList.add('answering');
+    fireAll(0.25);
+    setLoadUI(45,'var(--green)');
+    document.getElementById('hudLoad').textContent='45%';
+  } else {
+    brainTargetScale=1.0;
+    rotSpeedY=0.0025;
+    tag.textContent='◈ STANDBY';
+    tag.style.color='var(--cyan)';
+    tag.style.borderColor='var(--border)';
+    fireAll(0.05);
+    setLoadUI(5,'var(--cyan)');
+    document.getElementById('hudLoad').textContent='05%';
+  }
+}
+
+function fireAll(intensity){
+  neurons.forEach(n=>{if(Math.random()<intensity){n.fire=true;n.fp=0;}});
+  conns.forEach(c=>{if(Math.random()<intensity*.5){c.on=true;c.sig=0;}});
+}
+
+function setLoadUI(pct,color){
+  document.getElementById('scLoad').textContent=String(pct).padStart(2,'0')+'%';
+  document.getElementById('scLoadBar').style.width=pct+'%';
+  document.getElementById('scLoadBar').style.background=color;
+  document.getElementById('scLoadBar').style.boxShadow=`0 0 8px ${color}`;
+}
+
+// ══════════════════════════════════════
+// CHAT
+// ══════════════════════════════════════
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
+}
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,100)+'px';
+}
+
+async function send(){
+  const el=document.getElementById('txtIn');
+  const txt=el.value.trim();
+  if(!txt||busy) return;
+  el.value='';el.style.height='auto';
+
+  addMsg('user',txt);
+  history.push({role:'user',parts:[{text:txt}]});
+
+  busy=true;
+  showTyping(true);
+  setBrainMode('thinking');
+
+  // Learn from question
+  if(neurons.length<200){growNeuron();growNeuron();}
+  conns.forEach(c=>{if(Math.random()<0.1) c.w=Math.min(1,c.w+0.04);});
+  updateStats();
+
+  try{
+    const reply=await callGemini(txt);
+    showTyping(false);
+    setBrainMode('answering');
+    addMsg('bot',reply);
+    history.push({role:'model',parts:[{text:reply}]});
+    confVal=Math.min(99,72+Math.random()*25);
+    document.getElementById('hudConf').textContent=Math.round(confVal)+'%';
+    addTopic(txt.length>32?txt.slice(0,32)+'…':txt);
+    speak(reply);
+    // Learn from answer
+    conns.forEach(c=>{if(Math.random()<0.12) c.w=Math.min(1,c.w+0.03);});
+    setTimeout(()=>{setBrainMode('idle');},3000);
+  } catch(err){
+    showTyping(false);
+    setBrainMode('idle');
+    addMsg('bot','Fehler Sir: '+err.message);
+  }
+  busy=false;
+}
+
+async function callGemini(txt){
+  const sys=`Du bist J.A.R.V.I.S. — Just A Rather Very Intelligent System. Hochintelligenter, loyaler KI-Assistent im Iron Man Stil.
+Antworte IMMER auf Deutsch. Nenne den Benutzer "Sir". Sei präzise, intelligent und leicht witzig.
+Du hast Internet-Zugriff. Klare Antworten ohne Markdown-Formatierung.`;
+
+  const res=await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${KEY}`,
+    {method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[...history],
+      systemInstruction:{parts:[{text:sys}]},
+      generationConfig:{temperature:0.85,topP:0.95,maxOutputTokens:1024},
+      tools:[{googleSearch:{}}]
+    })}
+  );
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'HTTP '+res.status);}
+  const d=await res.json();
+  const parts=d.candidates?.[0]?.content?.parts||[];
+  return parts.filter(p=>p.text).map(p=>p.text).join('')||'Keine Antwort.';
+}
+
+// ── UI HELPERS ──
+function addMsg(role,text){
+  const box=document.getElementById('msgs');
+  box.querySelector('.welcome')?.remove();
+  box.querySelector('.typing-wrap')?.remove();
+  const w=document.createElement('div');
+  w.className='msg-wrap '+(role==='user'?'user':'bot');
+  const m=document.createElement('div');
+  m.className='msg-meta';
+  m.textContent=role==='user'?'// SIR':'// JARVIS';
+  const b=document.createElement('div');
+  b.className='bubble';b.textContent=text;
+  w.appendChild(m);w.appendChild(b);
+  box.appendChild(w);box.scrollTop=box.scrollHeight;
+}
+
+function showTyping(show){
+  const box=document.getElementById('msgs');
+  box.querySelector('.typing-wrap')?.remove();
+  if(!show) return;
+  const w=document.createElement('div');
+  w.className='typing-wrap';
+  const m=document.createElement('div');
+  m.className='msg-meta';m.textContent='// JARVIS';
+  const b=document.createElement('div');
+  b.className='typing-bub';
+  b.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  w.appendChild(m);w.appendChild(b);
+  box.appendChild(w);box.scrollTop=box.scrollHeight;
+}
+
+function addTopic(t){
+  topics.unshift(t);
+  if(topics.length>8) topics.pop();
+  document.getElementById('memLog').innerHTML=topics.map(tp=>
+    `<span class="mem-chip">${tp}</span>`
+  ).join('');
+}
+
+// ── VOICE ──
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text.replace(/[*#`_]/g,'').slice(0,450));
+  u.lang='de-DE';u.rate=0.92;u.pitch=0.78;
+  const vs=speechSynthesis.getVoices();
+  const v=vs.find(v=>v.lang==='de-DE'&&v.name.toLowerCase().includes('google'))||vs.find(v=>v.lang==='de-DE')||vs[0];
+  if(v) u.voice=v;
+  speechSynthesis.speak(u);
+}
+speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+
+function toggleMic(){
+  if(!('SpeechRecognition' in window)&&!('webkitSpeechRecognition' in window)){
+    alert('Bitte Chrome nutzen.');return;
+  }
+  if(listening){recog?.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recog=new SR();recog.lang='de-DE';recog.continuous=false;recog.interimResults=false;
+  recog.onstart=()=>{
+    listening=true;
+    document.getElementById('micBtn').classList.add('mic-on');
+    document.getElementById('micBtn').textContent='●';
+  };
+  recog.onresult=e=>{
+    document.getElementById('txtIn').value=e.results[0][0].transcript;
+    send();
+  };
+  recog.onerror=()=>{};
+  recog.onend=()=>{
+    listening=false;
+    document.getElementById('micBtn').classList.remove('mic-on');
+    document.getElementById('micBtn').textContent='◉';
+  };
+  recog.start();
+}
+
+window.onload=()=>{
+  const s=localStorage.getItem('jkey');
+  if(s) document.getElementById('keyIn').value=s;
+};
+</script>
+</body>
+</html>
