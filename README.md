@@ -1,99 +1,87 @@
-# J.A.R.V.I.S — Neural Interface
+# J.A.R.V.I.S — Offline Neural Interface
 
-> *Just A Rather Very Intelligent System*
+> *Just A Rather Very Intelligent System — vollständig offline, kein API-Key nötig*
 
-Ein modernes, KI-gestütztes Neural Interface im Sci-Fi Stil — mit 3D-Gehirn, Selbstlernfunktion und Sprachsteuerung.
-
-![Preview](https://img.shields.io/badge/Status-Online-00ff88?style=flat-square&logo=circle)
-![Neurons](https://img.shields.io/badge/Neuronen-Selbstlernend-00d4ff?style=flat-square)
-![Voice](https://img.shields.io/badge/Sprache-Deutsch-0095cc?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Offline%20Ready-00ff88?style=flat-square)
+![API](https://img.shields.io/badge/API--Key-Nicht%20nötig-00d4ff?style=flat-square)
+![Brain](https://img.shields.io/badge/Neuronen-Selbstlernend-ff9f0a?style=flat-square)
 
 ---
 
 ## Features
 
-- **3D Neuronales Netz** — rotierendes Gehirn auf Fibonacchi-Kugel, per Maus/Touch drehbar
-- **Selbstlernend** — Neuronen wachsen kontinuierlich, Synapsen stärken sich (Hebbsches Lernen)
-- **Expandiert beim Denken** — Gehirn vergrößert sich beim Verarbeiten einer Anfrage
-- **Zieht sich zusammen beim Antworten** — fokussiert sich beim Formulieren der Antwort
-- **Immer online** — Google Search Tool integriert für aktuelle Infos
-- **Sprachsteuerung** — Mikrofon-Eingabe (Chrome) + TTS-Ausgabe auf Deutsch
-- **Custom Cursor** — animierter Sci-Fi Cursor
+- **100% Offline** — kein API-Key, keine externe KI
+- **Eingebautes Wissen** — Physik, Chemie, Biologie, Mathe, Informatik, KI, Raumfahrt, Geschichte, Philosophie, Wirtschaft
+- **URL-Loader** — Links eingeben → Jarvis liest & analysiert den Inhalt → speichert lokal
+- **Selbstlernend** — Neuronen wachsen, Synapsen stärken sich bei jeder Interaktion
+- **3D Gehirn** — rotierendes Fibonacchi-Kugel-Netz, per Maus/Touch drehbar
+- **Expandiert beim Denken** — Gehirn wächst auf 140% beim Verarbeiten
+- **Zieht sich zusammen** beim Antworten (74%)
+- **Oranger Reading-Ring** beim URL-Laden
+- **Sprachsteuerung** — Mikrofon + TTS Deutsch (Chrome)
+- **Custom Cursor** — animierter Sci-Fi Cursor mit Nachläufer
 - **Boot Sequence** — animierter Startbildschirm
-- **HUD Overlays** — Neuronenzahl, Synapsen, Auslastung, Konfidenz
 
 ---
 
-## Setup
-
-### 1. Kostenlosen API-Key holen
-
-Gehe auf [aistudio.google.com/apikey](https://aistudio.google.com/apikey) und erstelle einen **Gemini API-Key**.  
-Kostenlos, dauert 2 Minuten, kein Kreditkarte nötig.
-
-### 2. Lokal starten
+## Setup — Einfacher geht's nicht
 
 ```bash
-# Einfach die Datei in Chrome öffnen
+# Einfach öffnen:
 open index.html
-# oder
-double-click index.html
+# oder Doppelklick auf index.html
 ```
 
-> **Wichtig:** Chrome verwenden (für Spracherkennung + CORS)
+**Kein API-Key. Keine Installation. Kein Server.** Einfach die HTML-Datei öffnen.
 
-### 3. GitHub Pages (Optional)
-
-```
-Settings → Pages → Branch: main → / (root) → Save
-```
-
-Dann ist Jarvis unter `https://dein-username.github.io/jarvis` erreichbar.
+> Chrome empfohlen (für Spracherkennung)
 
 ---
 
-## Steuerung
+## GitHub Pages
 
-| Aktion | Beschreibung |
-|--------|-------------|
-| **Maus ziehen** auf Gehirn | Gehirn rotieren |
-| **Tippen + Enter** | Nachricht senden |
-| **◉ Mikrofon** | Sprachsteuerung (Chrome) |
-| **▶ Senden** | Nachricht absenden |
+1. Repository erstellen
+2. `index.html` hochladen
+3. `Settings → Pages → Branch: main → Save`
+4. Läuft auf `https://USERNAME.github.io/REPO`
 
 ---
 
-## Tech Stack
+## URL-Loader nutzen
 
-- Pure **Vanilla JS** — kein Framework, keine Dependencies
-- **Gemini 2.0 Flash** API mit Google Search Tool
-- **3D Canvas** — eigene Projektionsmatrix, Fibonacci-Kugel
-- **Web Speech API** — Spracheingabe & TTS
-- **CSS Animations** — Boot Sequence, Cursor, Pulse Effects
-
----
-
-## Selbstlernmechanismus
-
-```
-Alle 3.5 Sekunden:
-├── Synaptische Stärkung (Hebbsches Lernen)
-├── Synaptisches Pruning (schwache Verbindungen entfernen)
-├── Neuronenwachstum (+1 Neuron bis max. 200)
-└── Zufälliger Aktivierungsfunke
-
-Bei jeder Anfrage:
-├── +2 neue Neuronen
-├── Verbindungsgewichte erhöhen
-└── Gehirn expandiert (Scale 1.42x)
-
-Bei jeder Antwort:
-├── Weitere Gewichtsstärkung
-└── Gehirn kontrahiert (Scale 0.72x)
-```
+1. URL in das Feld oben rechts eingeben (z.B. `https://de.wikipedia.org/wiki/KI`)
+2. **LADEN** drücken
+3. Jarvis liest den Inhalt via CORS-Proxy
+4. Danach Fragen dazu stellen — Jarvis filtert relevante Abschnitte heraus
+5. Geladene Seiten erscheinen als Chips in der Wissensdatenbank
 
 ---
 
-## Lizenz
+## Wissensbereiche (eingebaut)
 
-MIT — frei verwendbar.
+| Bereich | Themen |
+|---------|--------|
+| Physik | Relativität, Quantenmechanik, Gravitation, Thermodynamik |
+| Chemie | Atome, Verbindungen, Reaktionen |
+| Biologie | Zellen, DNA, Evolution, Gehirn |
+| Mathematik | Grundlagen, Statistik, Geometrie, Wahrscheinlichkeit |
+| Informatik | Algorithmen, Programmierung, KI/ML, Netzwerke, Sicherheit |
+| Raumfahrt | Artemis, ISS, Mars, Raketenantrieb |
+| Geschichte | WW1, WW2, Kalter Krieg, Internet-Geschichte |
+| Philosophie | Sokrates, Kant, Nietzsche, Existentialismus |
+| Wirtschaft | BIP, Finanzen, Tech-Branche, Startups |
+| Aktuelles | KI 2024, Klima, Geopolitik |
+
+---
+
+## Tech
+
+- Pure **Vanilla JS** — zero dependencies
+- **3D Canvas** — eigene Projektionsmatrix
+- **CORS Proxy** — allorigins.win für URL-Laden
+- **Web Speech API** — Sprachein/-ausgabe
+- Läuft komplett im Browser, kein Server nötig
+
+---
+
+MIT License
